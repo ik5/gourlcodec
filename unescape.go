@@ -202,10 +202,11 @@ func unescape(s string, mode encoding, log *logrus.Logger) ([]rune, error) {
 			f = append(f, []byte{s[i]}...)
 		}
 
+		log.Tracef("f: %+v", f)
 		if len(f) == 2 {
 			x := binary.BigEndian.Uint16(f)
 			u := utf16.Decode([]uint16{x})
-			log.Tracef("%#U | % x", u, u)
+			log.Tracef("u=%#U | u=% x | x=%d", u, u, x)
 			t = append(t, u...)
 			f = []byte{}
 		}
