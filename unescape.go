@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"net/url"
 	"unicode/utf16"
+
+	"github.com/sirupsen/logrus"
 )
 
 func ishex(c byte) bool {
@@ -127,7 +129,7 @@ func shouldEscape(c byte, mode encoding) bool {
 
 // unescape unescapes a string; the mode specifies
 // which section of the URL string is being unescaped.
-func unescape(s string, mode encoding) ([]rune, error) {
+func unescape(s string, mode encoding, log *logrus.Logger) ([]rune, error) {
 	// Count %, check that they're well-formed.
 	n := 0
 	hasPlus := false
@@ -203,6 +205,7 @@ func unescape(s string, mode encoding) ([]rune, error) {
 		if len(f) == 2 {
 			x := binary.BigEndian.Uint16(f)
 			u := utf16.Decode([]uint16{x})
+			log.Tracef("%#U | % x", u, u)
 			t = append(t, u...)
 			f = []byte{}
 		}
@@ -215,6 +218,6 @@ func unescape(s string, mode encoding) ([]rune, error) {
 // hex-decoded byte 0xAB.
 // It returns an error if any % is not followed by two hexadecimal
 // digits.
-func QueryUnescape(s string) ([]rune, error) {
-	return unescape(s, encodeQueryComponent)
+func QueryUnescape(s string, log *logrus.Logger) ([]rune, error) {
+	return unescape(s, encodeQueryComponent, log)
 }
