@@ -2,7 +2,6 @@ package gourlcodec
 
 import (
 	"encoding/binary"
-	"fmt"
 	"net/url"
 	"unicode/utf16"
 )
@@ -204,7 +203,6 @@ func unescape(s string, mode encoding) ([]rune, error) {
 		if len(f) == 2 {
 			x := binary.BigEndian.Uint16(f)
 			u := utf16.Decode([]uint16{x})
-			fmt.Println(len(f), f, x, u)
 			t = append(t, u...)
 			f = []byte{}
 		}
